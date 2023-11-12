@@ -30,8 +30,8 @@ public class ASDR implements Parser{
     private void Q(){
         match(TipoToken.SELECT);
         D();
-        //match(TipoToken.FROM);
-        //T();
+        match(TipoToken.FROM);
+        T();
     }
 
     // D -> distinct P | P
@@ -117,7 +117,7 @@ public class ASDR implements Parser{
     }
 
 
-    private void match(TipoToken tt){
+    /*private void match(TipoToken tt){
         if(preanalisis.tipo == tt){
             i++;
             preanalisis = tokens.get(i);
@@ -127,6 +127,50 @@ public class ASDR implements Parser{
             System.out.println("Error encontrado");
         }
 
+    }*/
+    private void match(TipoToken tt) {
+        if (hayErrores) return;
+
+        if (preanalisis.tipo == tt) {
+            i++;
+            if (i < tokens.size()) {
+                preanalisis = tokens.get(i);
+            } else {
+                // Manejo del final de los tokens
+                preanalisis = new Token(TipoToken.EOF, "", -1);
+            }
+        } else {
+            hayErrores = true;
+            Principal.error(preanalisis.posicion, "Se esperaba " + tt + ", pero se encontró " + preanalisis.tipo);
+        }
     }
+
+    // T -> T2 T1
+    private void T() {
+        if (hayErrores) return;
+
+        T2();
+        T1();
+    }
+
+    // T2 -> id T3
+    private void T2() {
+        if (hayErrores) return;
+
+        if (preanalisis.tipo == TipoToken.IDENTIFICADOR) {
+            match(TipoToken.IDENTIFICADOR);
+            T3();
+        } else {
+            hayErrores = true;
+            System.out.println("Se esperaba un 'identificador'");
+        }
+    }
+
+
+
+
+
+
+
 
 }
