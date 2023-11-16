@@ -166,11 +166,25 @@ public class ASDR implements Parser{
         }
     }
 
+    // T1 -> , T | ε
+    private void T1() {
+        if (hayErrores) return;
 
+        if (preanalisis.tipo == TipoToken.COMA) {
+            match(TipoToken.COMA);
+            T();
+        }
+        // Si no hay una coma, se asume la producción epsilon (ε), por lo que no se hace nada.
+    }
 
+    // T3 -> id | ε
+    private void T3() {
+        if (hayErrores) return;
 
+        if (preanalisis.tipo == TipoToken.IDENTIFICADOR) {
+            match(TipoToken.IDENTIFICADOR);
+        }
+        // Si no hay un identificador, se asume la producción epsilon (ε), por lo que no se hace nada.
+    }
 
-
-
-
-}
+    }
